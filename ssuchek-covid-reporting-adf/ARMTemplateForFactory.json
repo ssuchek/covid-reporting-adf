@@ -18,6 +18,10 @@
 		"ls_adls_ssuchekcovidreportingdl_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://ssuchekcovidreportingdl.dfs.core.windows.net"
+		},
+		"tr_ingest_population_data_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/f1b8e975-8fe0-40b2-8399-57cfa38564eb/resourceGroups/ssuchek-covid-reporting-rg/providers/Microsoft.Storage/storageAccounts/ssuchekcovidreportingsa"
 		}
 	},
 	"variables": {
@@ -316,6 +320,36 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_population_raw_gz')]",
 				"[concat(variables('factoryId'), '/datasets/ds_population_raw_tsv')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tr_ingest_population_data')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pl_ingest_population_data",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/population/blobs/population_by_age.tsv.gz",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('tr_ingest_population_data_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_ingest_population_data')]"
 			]
 		}
 	]

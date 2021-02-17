@@ -19,6 +19,10 @@
 			"type": "string",
 			"defaultValue": "https://ssuchekcovidreportingdl.dfs.core.windows.net"
 		},
+		"tr_ingest_population_data_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/f1b8e975-8fe0-40b2-8399-57cfa38564eb/resourceGroups/ssuchek-covid-reporting-rg/providers/Microsoft.Storage/storageAccounts/ssuchekcovidreportingsa"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -54,6 +58,9 @@
 					},
 					"ls_adls_ssuchekcovidreportingdl_properties_typeProperties_url": {
 						"value": "[parameters('ls_adls_ssuchekcovidreportingdl_properties_typeProperties_url')]"
+					},
+					"tr_ingest_population_data_properties_typeProperties_scope": {
+						"value": "[parameters('tr_ingest_population_data_properties_typeProperties_scope')]"
 					}
 				}
 			},
