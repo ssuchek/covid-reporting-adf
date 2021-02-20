@@ -34,7 +34,7 @@
 				}
 			},
 			{
-				"name": "Execute cope for all ECDC diles",
+				"name": "Execute copy for all ECDC diles",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -47,7 +47,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Lookup ECDC file list').output",
+						"value": "@activity('Lookup ECDC file list').output.value",
 						"type": "Expression"
 					},
 					"activities": [
