@@ -14,9 +14,6 @@
 		"ls_adls_ssuchekcovidreportingdl_properties_typeProperties_url": {
 			"value": "https://ssuchekcovidreportingdl.dfs.core.windows.net"
 		},
-		"tr_ingest_population_data_properties_typeProperties_scope": {
-			"value": "/subscriptions/f1b8e975-8fe0-40b2-8399-57cfa38564eb/resourceGroups/ssuchek-covid-reporting-rg/providers/Microsoft.Storage/storageAccounts/ssuchekcovidreportingsa"
-		},
 		"ls_http_opendata_ecdc_europe_eu_properties_typeProperties_url": {
 			"value": "https://github.com"
 		},
@@ -25,6 +22,9 @@
 		},
 		"tr_ingest_hospital_admissions_data_properties_pl_ingest_ecdc_data_parameters_sinkFileName": {
 			"value": "hospital_admissions.csv"
+		},
+		"tr_ingest_population_data_properties_typeProperties_scope": {
+			"value": "/subscriptions/f1b8e975-8fe0-40b2-8399-57cfa38564eb/resourceGroups/ssuchek-covid-reporting-rg/providers/Microsoft.Storage/storageAccounts/ssuchekcovidreportingsa"
 		}
 	}
 }
