@@ -17,6 +17,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "CountryLookup"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_dim_data_lookup",
+						"type": "DatasetReference"
+					},
+					"name": "DimDateSource"
 				}
 			],
 			"sinks": [],
@@ -34,7 +41,7 @@
 					"name": "SplitDailyWeekly"
 				}
 			],
-			"script": "source(output(\n\t\tcountry as string,\n\t\tindicator as string,\n\t\tdate as date,\n\t\tyear_week as string,\n\t\tvalue as double,\n\t\tsource as string,\n\t\turl as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> HospitalAdmissionsSource\nsource(output(\n\t\tcountry as string,\n\t\tcountry_code_2_digit as string,\n\t\tcountry_code_3_digit as string,\n\t\tcontinent as string,\n\t\tpopulation as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> CountryLookup\nHospitalAdmissionsSource select(mapColumn(\n\t\tcountry,\n\t\tindicator,\n\t\teach(match(name=='date'),\n\t\t\t'reported'+'_date' = $$),\n\t\teach(match(name=='year_week'),\n\t\t\t'reported'+'_year_week' = $$),\n\t\tvalue,\n\t\tsource\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> SelectOnlyRequiredFields\nSelectOnlyRequiredFields, CountryLookup lookup(SelectOnlyRequiredFields@country == CountryLookup@country,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> LookupCountry\nLookupCountry select(mapColumn(\n\t\tcountry = SelectOnlyRequiredFields@country,\n\t\tindicator,\n\t\treported_date,\n\t\treported_year_week,\n\t\tvalue,\n\t\tsource,\n\t\tcountry = CountryLookup@country,\n\t\tcountry_code_2_digit,\n\t\tcountry_code_3_digit,\n\t\tpopulation\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectAfterLookup\nSelectAfterLookup split(indicator=='Daily hospital occupancy' || indicator=='Daily ICU occupancy',\n\tdisjoint: false) ~> SplitDailyWeekly@(Daily, Weekly)"
+			"script": "source(output(\n\t\tcountry as string,\n\t\tindicator as string,\n\t\tdate as date,\n\t\tyear_week as string,\n\t\tvalue as double,\n\t\tsource as string,\n\t\turl as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> HospitalAdmissionsSource\nsource(output(\n\t\tcountry as string,\n\t\tcountry_code_2_digit as string,\n\t\tcountry_code_3_digit as string,\n\t\tcontinent as string,\n\t\tpopulation as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> CountryLookup\nsource(output(\n\t\tdate_key as string,\n\t\tdate as string,\n\t\tyear as string,\n\t\tmonth as string,\n\t\tday as string,\n\t\tday_name as string,\n\t\tday_of_year as string,\n\t\tweek_of_month as string,\n\t\tweek_of_year as string,\n\t\tmonth_name as string,\n\t\tyear_month as string,\n\t\tyear_week as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DimDateSource\nHospitalAdmissionsSource select(mapColumn(\n\t\tcountry,\n\t\tindicator,\n\t\teach(match(name=='date'),\n\t\t\t'reported'+'_date' = $$),\n\t\teach(match(name=='year_week'),\n\t\t\t'reported'+'_year_week' = $$),\n\t\tvalue,\n\t\tsource\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> SelectOnlyRequiredFields\nSelectOnlyRequiredFields, CountryLookup lookup(SelectOnlyRequiredFields@country == CountryLookup@country,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> LookupCountry\nLookupCountry select(mapColumn(\n\t\tcountry = SelectOnlyRequiredFields@country,\n\t\tindicator,\n\t\treported_date,\n\t\treported_year_week,\n\t\tvalue,\n\t\tsource,\n\t\tcountry = CountryLookup@country,\n\t\tcountry_code_2_digit,\n\t\tcountry_code_3_digit,\n\t\tpopulation\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectAfterLookup\nSelectAfterLookup split(indicator=='Daily hospital occupancy' || indicator=='Daily ICU occupancy',\n\tdisjoint: false) ~> SplitDailyWeekly@(Daily, Weekly)"
 		}
 	}
 }
